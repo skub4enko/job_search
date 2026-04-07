@@ -1,0 +1,29 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtualenv
+.venv/
+venv/
+ENV/
+
+# Project outputs
+.cache_http/
+results/*.json
+
+# PyInstaller
+build/
+dist/
+_pyi_tmp/
+*.spec
+
+# OS / editor
+*.lnk
+.DS_Store
+Thumbs.db
+
+# Large optional Tcl sources (not required to run)
+tools/tcl8.6.13/
+tools/tcl-core*.tar.gz
+
