@@ -27,3 +27,7 @@ Thumbs.db
 tools/tcl8.6.13/
 tools/tcl-core*.tar.gz
 
+
+# Secrets
+assets/api.txt
+
