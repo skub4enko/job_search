@@ -23,6 +23,12 @@ _pyi_tmp/
 .DS_Store
 Thumbs.db
 
+# Windows PowerShell analysis cache (sometimes appears as an untracked folder)
+Microsoft/
+
+# Personal notes
+to do list.txt
+
 # Large optional Tcl sources (not required to run)
 tools/tcl8.6.13/
 tools/tcl-core*.tar.gz

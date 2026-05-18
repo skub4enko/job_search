@@ -100,6 +100,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "verbose": "\u0434\u0435\u0442\u0430\u043b\u044c\u043d\u043e",
         "dark mode": "\u0442\u0435\u043c\u043d\u0430 \u0442\u0435\u043c\u0430",
         "use cache": "\u0432\u0438\u043a\u043e\u0440\u0438\u0441\u0442\u043e\u0432\u0443\u0432\u0430\u0442\u0438 \u043a\u0435\u0448",
+        "Clear JSON": "\u041e\u0447\u0438\u0441\u0442\u0438\u0442\u0438 JSON",
         "Clear cache": "\u041e\u0447\u0438\u0441\u0442\u0438\u0442\u0438 \u043a\u0435\u0448",
         "Language:": "\u041c\u043e\u0432\u0430:",
         "Sources:": "\u0414\u0436\u0435\u0440\u0435\u043b\u0430:",
@@ -113,7 +114,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "Resume": "\u041f\u0440\u043e\u0434\u043e\u0432\u0436\u0438\u0442\u0438",
         "Stop": "\u0417\u0443\u043f\u0438\u043d\u0438\u0442\u0438",
         "View in browser": "\u041f\u0435\u0440\u0435\u0433\u043b\u044f\u043d\u0443\u0442\u0438 \u0432 \u0431\u0440\u0430\u0443\u0437\u0435\u0440\u0456",
-        "Open JSON file": "\u0412\u0456\u0434\u043a\u0440\u0438\u0442\u0438 JSON \u0444\u0430\u0439\u043b",
+        "Open JSON file": "JSON file",
         "Ready": "\u0413\u043e\u0442\u043e\u0432\u043e",
         "Running...": "\u041f\u0440\u0430\u0446\u044e\u044e...",
         "Paused": "\u041f\u0430\u0443\u0437\u0430",
@@ -124,10 +125,22 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "Please enter at least one query": "\u0412\u043a\u0430\u0436\u0456\u0442\u044c \u0445\u043e\u0447\u0430 \u0431 \u043e\u0434\u0438\u043d \u0437\u0430\u043f\u0438\u0442",
         "No sources selected": "\u041d\u0435 \u0432\u0438\u0431\u0440\u0430\u043d\u043e \u0436\u043e\u0434\u043d\u043e\u0433\u043e \u0434\u0436\u0435\u0440\u0435\u043b\u0430",
         "Stop parsing before clearing cache.": "\u0417\u0443\u043f\u0438\u043d\u0456\u0442\u044c \u043f\u0430\u0440\u0441\u0438\u043d\u0433 \u043f\u0435\u0440\u0435\u0434 \u043e\u0447\u0438\u0449\u0435\u043d\u043d\u044f\u043c \u043a\u0435\u0448\u0443.",
+        "Stop parsing before clearing JSON.": "\u0417\u0443\u043f\u0438\u043d\u0456\u0442\u044c \u043f\u0430\u0440\u0441\u0438\u043d\u0433 \u043f\u0435\u0440\u0435\u0434 \u043e\u0447\u0438\u0449\u0435\u043d\u043d\u044f\u043c JSON.",
         "Cache folder not found:": "\u041f\u0430\u043f\u043a\u0443 \u043a\u0435\u0448\u0443 \u043d\u0435 \u0437\u043d\u0430\u0439\u0434\u0435\u043d\u043e:",
         "Delete cache folder?": "\u0412\u0438\u0434\u0430\u043b\u0438\u0442\u0438 \u043f\u0430\u043f\u043a\u0443 \u043a\u0435\u0448\u0443?",
         "Failed to clear cache:": "\u041d\u0435 \u0432\u0434\u0430\u043b\u043e\u0441\u044f \u043e\u0447\u0438\u0441\u0442\u0438\u0442\u0438 \u043a\u0435\u0448:",
+        "Delete all records from JSON file?": "\u0412\u0438\u0434\u0430\u043b\u0438\u0442\u0438 \u0432\u0441\u0456 \u0437\u0430\u043f\u0438\u0441\u0438 \u0437 JSON \u0444\u0430\u0439\u043b\u0443?",
+        "A backup will be created:": "\u0411\u0443\u0434\u0435 \u0441\u0442\u0432\u043e\u0440\u0435\u043d\u043e \u0440\u0435\u0437\u0435\u0440\u0432\u043d\u0443 \u043a\u043e\u043f\u0456\u044e:",
+        "Failed to clear JSON:": "\u041d\u0435 \u0432\u0434\u0430\u043b\u043e\u0441\u044f \u043e\u0447\u0438\u0441\u0442\u0438\u0442\u0438 JSON:",
+        "JSON cleared:": "JSON \u043e\u0447\u0438\u0449\u0435\u043d\u043e:",
         "Failed to start server:": "\u041d\u0435 \u0432\u0434\u0430\u043b\u043e\u0441\u044f \u0437\u0430\u043f\u0443\u0441\u0442\u0438\u0442\u0438 \u0441\u0435\u0440\u0432\u0435\u0440:",
+        "Cache warning": "\u0423\u0432\u0430\u0433\u0430: \u043a\u0435\u0448",
+        "Using cache will significantly increase the size of the working folder because some pages will be stored locally, but it can speed up parsing. It is recommended to clear the cache periodically.": (
+            "\u0412\u0438\u043a\u043e\u0440\u0438\u0441\u0442\u0430\u043d\u043d\u044f \u043a\u0435\u0448\u0443 \u0437\u043d\u0430\u0447\u043d\u043e \u0437\u0431\u0456\u043b\u044c\u0448\u0438\u0442\u044c \u0440\u043e\u0437\u043c\u0456\u0440 \u0440\u043e\u0431\u043e\u0447\u043e\u0457 \u043f\u0430\u043f\u043a\u0438, "
+            "\u043e\u0441\u043a\u0456\u043b\u044c\u043a\u0438 \u0447\u0430\u0441\u0442\u0438\u043d\u0430 \u0441\u0442\u043e\u0440\u0456\u043d\u043e\u043a \u0437\u0431\u0435\u0440\u0456\u0433\u0430\u0442\u0438\u043c\u0435\u0442\u044c\u0441\u044f \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u043e, "
+            "\u0430\u043b\u0435 \u0446\u0435 \u043c\u043e\u0436\u0435 \u043f\u0440\u0438\u0441\u043a\u043e\u0440\u0438\u0442\u0438 \u043f\u0430\u0440\u0441\u0438\u043d\u0433. "
+            "\u0420\u0430\u0434\u0438\u043c\u043e \u0447\u0430\u0441 \u0432\u0456\u0434 \u0447\u0430\u0441\u0443 \u043e\u0447\u0438\u0449\u0430\u0442\u0438 \u043a\u0435\u0448."
+        ),
         "File": "\u0424\u0430\u0439\u043b",
         "File not found:": "\u0424\u0430\u0439\u043b \u043d\u0435 \u0437\u043d\u0430\u0439\u0434\u0435\u043d\u043e:",
         "Done:": "\u0413\u043e\u0442\u043e\u0432\u043e:",
@@ -139,6 +152,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "verbose": "szczeg\u00f3\u0142owo",
         "dark mode": "tryb ciemny",
         "use cache": "u\u017cyj cache",
+        "Clear JSON": "Wyczy\u015b\u0107 JSON",
         "Clear cache": "Wyczy\u015b\u0107 cache",
         "Language:": "J\u0119zyk:",
         "Sources:": "\u0179r\u00f3d\u0142a:",
@@ -163,10 +177,20 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "Please enter at least one query": "Wpisz co najmniej jedno zapytanie",
         "No sources selected": "Nie wybrano \u017ar\u00f3de\u0142",
         "Stop parsing before clearing cache.": "Zatrzymaj wyszukiwanie przed czyszczeniem cache.",
+        "Stop parsing before clearing JSON.": "Zatrzymaj wyszukiwanie przed czyszczeniem JSON.",
         "Cache folder not found:": "Nie znaleziono folderu cache:",
         "Delete cache folder?": "Usun\u0105\u0107 folder cache?",
         "Failed to clear cache:": "Nie uda\u0142o si\u0119 wyczy\u015bci\u0107 cache:",
+        "Delete all records from JSON file?": "Usun\u0105\u0107 wszystkie rekordy z pliku JSON?",
+        "A backup will be created:": "Zostanie utworzona kopia zapasowa:",
+        "Failed to clear JSON:": "Nie uda\u0142o si\u0119 wyczy\u015bci\u0107 JSON:",
+        "JSON cleared:": "JSON wyczyszczono:",
         "Failed to start server:": "Nie uda\u0142o si\u0119 uruchomi\u0107 serwera:",
+        "Cache warning": "Ostrze\u017cenie: cache",
+        "Using cache will significantly increase the size of the working folder because some pages will be stored locally, but it can speed up parsing. It is recommended to clear the cache periodically.": (
+            "Korzystanie z cache znacz\u0105co zwi\u0119kszy rozmiar folderu roboczego, poniewa\u017c cz\u0119\u015b\u0107 stron b\u0119dzie przechowywana lokalnie, "
+            "ale mo\u017ce przyspieszy\u0107 parsowanie. Zalecamy okresowe czyszczenie cache."
+        ),
         "File": "Plik",
         "File not found:": "Nie znaleziono pliku:",
         "Done:": "Gotowe:",
@@ -178,6 +202,7 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "verbose": "ausf\u00fchrlich",
         "dark mode": "dunkles Design",
         "use cache": "Cache verwenden",
+        "Clear JSON": "JSON leeren",
         "Clear cache": "Cache leeren",
         "Language:": "Sprache:",
         "Sources:": "Quellen:",
@@ -202,10 +227,20 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
         "Please enter at least one query": "Bitte mindestens einen Suchbegriff eingeben",
         "No sources selected": "Keine Quellen ausgew\u00e4hlt",
         "Stop parsing before clearing cache.": "Bitte Vorgang stoppen, bevor der Cache geleert wird.",
+        "Stop parsing before clearing JSON.": "Bitte Vorgang stoppen, bevor JSON geleert wird.",
         "Cache folder not found:": "Cache-Ordner nicht gefunden:",
         "Delete cache folder?": "Cache-Ordner l\u00f6schen?",
         "Failed to clear cache:": "Cache konnte nicht geleert werden:",
+        "Delete all records from JSON file?": "Alle Eintr\u00e4ge aus der JSON-Datei l\u00f6schen?",
+        "A backup will be created:": "Es wird ein Backup erstellt:",
+        "Failed to clear JSON:": "JSON konnte nicht geleert werden:",
+        "JSON cleared:": "JSON geleert:",
         "Failed to start server:": "Server konnte nicht gestartet werden:",
+        "Cache warning": "Cache-Warnung",
+        "Using cache will significantly increase the size of the working folder because some pages will be stored locally, but it can speed up parsing. It is recommended to clear the cache periodically.": (
+            "Die Cache-Nutzung vergr\u00f6\u00dfert den Arbeitsordner deutlich, da einige Seiten lokal gespeichert werden, "
+            "kann das Parsen aber beschleunigen. Es wird empfohlen, den Cache gelegentlich zu leeren."
+        ),
         "File": "Datei",
         "File not found:": "Datei nicht gefunden:",
         "Done:": "Fertig:",
@@ -386,7 +421,7 @@ class App:
 
     def __init__(self, root: tk.Tk):
         self.root = root
-        self._lang = "en"
+        self._lang = "uk"
         self.root.title("Job Search UA")
         self.root.geometry("900x560")
 
@@ -396,6 +431,7 @@ class App:
         self._query_label = ""
         self._last_out: Path | None = None
         self.cache_dir = Path(__file__).resolve().parents[1] / ".cache_http"
+        self._suppress_cache_prompt = False
 
         frm = ttk.Frame(root, padding=12)
         frm.pack(fill=tk.BOTH, expand=True)
@@ -423,9 +459,14 @@ class App:
         row0b.pack(fill=tk.X, pady=(6, 0))
 
         ttk.Label(row0b, text="Language:").pack(side=tk.LEFT)
-        self._lang_map = {"English": "en", "\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430": "uk", "Polski": "pl", "Deutsch": "de"}
+        self._lang_map = {
+            "\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430": "uk",
+            "English": "en",
+            "Polski": "pl",
+            "Deutsch": "de",
+        }
         self.lang_combo = ttk.Combobox(row0b, values=list(self._lang_map.keys()), state="readonly", width=14)
-        self.lang_combo.set("English")
+        self.lang_combo.set("\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430")
         self.lang_combo.pack(side=tk.LEFT, padx=6)
 
         ttk.Label(row0b, text="Locations (comma-separated):").pack(side=tk.LEFT, padx=(14, 0))
@@ -462,7 +503,7 @@ class App:
             "olxua": "OLX (Jobs)",
             "grcua": "GRC",
             "talentua": "Talent.UA",
-            "jooble": "Jooble",
+            "jooble": "Jooble (API)",
             "indeed": "Indeed (API)",
             "trudnet": "Trud.net",
         }
@@ -483,8 +524,13 @@ class App:
         self.state_var = tk.StringVar(value="results/jobs_state.json")
         ttk.Entry(row1, textvariable=self.state_var, width=22).pack(side=tk.LEFT, padx=8)
 
-        self.use_cache_var = tk.BooleanVar(value=False)
-        ttk.Checkbutton(row1, text="use cache", variable=self.use_cache_var).pack(side=tk.LEFT, padx=8)
+        self.use_cache_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(
+            row1,
+            text="use cache",
+            variable=self.use_cache_var,
+            command=self.on_use_cache_toggle,
+        ).pack(side=tk.LEFT, padx=8)
 
         row2 = ttk.Frame(frm)
         row2.pack(fill=tk.X, pady=(12, 0))
@@ -504,6 +550,9 @@ class App:
         self.btn_open_file = ttk.Button(row2, text="Open JSON file", command=self.on_open_file)
         self.btn_open_file.pack(side=tk.LEFT)
 
+        self.btn_clear_json = ttk.Button(row2, text="Clear JSON", command=self.on_clear_json)
+        self.btn_clear_json.pack(side=tk.LEFT, padx=8)
+
         self.btn_clear_cache = ttk.Button(row2, text="Clear cache", command=self.on_clear_cache)
         self.btn_clear_cache.pack(side=tk.LEFT, padx=8)
 
@@ -522,15 +571,39 @@ class App:
         except Exception:
             pass
 
+        self._apply_language()
         self._set_buttons(enabled=True)
         self._apply_theme()
         self._load_api_keys()
+
+    def on_use_cache_toggle(self) -> None:
+        if self._suppress_cache_prompt:
+            return
+        # Show a warning only when enabling cache.
+        if not bool(self.use_cache_var.get()):
+            return
+
+        title = self._t("Cache warning")
+        msg = self._t(
+            "Using cache will significantly increase the size of the working folder because some pages will be stored locally, but it can speed up parsing. It is recommended to clear the cache periodically."
+        )
+        ok = messagebox.askokcancel(title, msg)
+        if ok:
+            return
+
+        # Revert checkbox.
+        try:
+            self._suppress_cache_prompt = True
+            self.use_cache_var.set(False)
+        finally:
+            self._suppress_cache_prompt = False
 
     def _set_buttons(self, *, enabled: bool) -> None:
         state = tk.NORMAL if enabled else tk.DISABLED
         self.btn_run.config(state=state)
         self.btn_view.config(state=state)
         self.btn_open_file.config(state=state)
+        self.btn_clear_json.config(state=state)
         self.btn_clear_cache.config(state=state)
 
     def _append_log(self, text: str) -> None:
@@ -541,6 +614,12 @@ class App:
         # Tkinter doesn't have a true native dark mode; we approximate via ttk styles + Text colors.
         style = ttk.Style()
         dark = bool(self.dark_mode.get())
+
+        # PowerShell-like console colors.
+        ps_bg_dark = "#012456"   # classic Windows PowerShell dark blue
+        ps_fg_dark = "#EEEDF0"   # near-white
+        ps_bg_light = "#9CDCFE"  # light blue accent (readable in dark UI)
+        ps_fg_light = "#012456"  # dark blue text on light blue
 
         if dark:
             try:
@@ -563,7 +642,13 @@ class App:
             style.configure("TEntry", fieldbackground=field_bg, foreground=fg)
 
             self.root.configure(bg=bg)
-            self.log.configure(bg="white", fg="black", insertbackground="black")
+            self.log.configure(
+                bg=ps_bg_light,
+                fg=ps_fg_light,
+                insertbackground=ps_fg_light,
+                selectbackground=ps_bg_dark,
+                selectforeground=ps_fg_dark,
+            )
             return
 
         # Light / default
@@ -575,7 +660,13 @@ class App:
         except Exception:
             pass
         self.root.configure(bg="")
-        self.log.configure(bg="#111111", fg="#e6e6e6", insertbackground="#e6e6e6")
+        self.log.configure(
+            bg=ps_bg_dark,
+            fg=ps_fg_dark,
+            insertbackground=ps_fg_dark,
+            selectbackground=ps_bg_light,
+            selectforeground=ps_fg_light,
+        )
 
     def _load_api_keys(self) -> None:
         # Load API keys from a local file, but avoid bundling secrets into the EXE.
@@ -795,6 +886,41 @@ class App:
         except Exception as e:
             messagebox.showerror(self._t("Error"), f"{self._t("Failed to clear cache:")} {e}")
 
+    def on_clear_json(self) -> None:
+        # Only allow when idle.
+        if self._cancel_event is not None:
+            messagebox.showinfo(self._t("Busy"), self._t("Stop parsing before clearing JSON."))
+            return
+
+        state_path = Path(self.state_var.get().strip() or "results/jobs_state.json").resolve()
+        if not state_path.exists():
+            messagebox.showinfo(self._t("File"), f"{self._t("File not found:")} {state_path}")
+            return
+
+        ts = _now_kyiv().strftime("%Y-%m-%d_%H-%M-%S")
+        backup_path = state_path.with_suffix(state_path.suffix + f".bak_{ts}")
+        i = 2
+        while backup_path.exists():
+            backup_path = state_path.with_suffix(state_path.suffix + f".bak_{ts}_{i}")
+            i += 1
+
+        title = self._t("Clear JSON")
+        msg = (
+            f"{self._t("Delete all records from JSON file?")}\n{state_path}\n\n"
+            f"{self._t("A backup will be created:")}\n{backup_path}"
+        )
+        if not messagebox.askyesno(title, msg):
+            return
+
+        try:
+            backup_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(state_path, backup_path)
+            state_path.write_text("[]\n", encoding="utf-8")
+            self._append_log(f"JSON cleared: {state_path} (backup={backup_path})")
+            self.status.set(f"{self._t("JSON cleared:")} {state_path.name}")
+        except Exception as e:
+            messagebox.showerror(self._t("Error"), f"{self._t("Failed to clear JSON:")} {e}")
+
 
     def on_pause(self) -> None:
         if getattr(self, "_pause_event", None) is None:
@@ -828,8 +954,12 @@ class App:
         try:
             if self._server is None:
                 self._server = start_server(json_path=file_to_view)
-            url = "http://127.0.0.1:8765/"
+            host, port = self._server.server_address[:2]
+            url = f"http://{host}:{port}/"
             webbrowser.open(url)
+            if getattr(self._server, "_jobsearch_fallback_port", False):
+                req_port = getattr(self._server, "_jobsearch_requested_port", 8765)
+                self._append_log(f"Viewer port {req_port} недоступен, использую {port}")
             self._append_log(f"Viewer: {url} (file={file_to_view})")
         except OSError as e:
             messagebox.showerror(self._t("Error"), f"{self._t("Failed to start server:")} {e}")
@@ -851,7 +981,32 @@ class App:
 
 def main() -> int:
     _win_set_app_user_model_id("JobSearchUA")
-    root = tk.Tk()
+
+    def _show_startup_error(msg: str) -> None:
+        # When started via `pythonw` (or from EXE), we may have no console.
+        # Use a native Windows message box as a last resort.
+        try:
+            import ctypes  # noqa: PLC0415
+
+            ctypes.windll.user32.MessageBoxW(0, msg, "JobSearchUA", 0x10)  # type: ignore[attr-defined]
+        except Exception:
+            try:
+                print(msg, file=sys.stderr)
+            except Exception:
+                pass
+
+    try:
+        root = tk.Tk()
+    except tk.TclError as e:
+        _show_startup_error(
+            "Не удалось запустить GUI (Tkinter/Tcl).\n\n"
+            f"{e}\n\n"
+            "Что делать:\n"
+            "1) Переустановите/почините Python с компонентом Tcl/Tk (\"tcl/tk and IDLE\").\n"
+            "2) Или используйте CLI: python -m job_search --query \"Python\".\n"
+        )
+        return 1
+
     _try_set_app_icon(root)
     try:
         style = ttk.Style()

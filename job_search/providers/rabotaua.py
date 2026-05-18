@@ -74,7 +74,8 @@ class RabotaUAProvider(Provider):
         async with httpx.AsyncClient(timeout=timeout, headers=headers, follow_redirects=True) as client:
             total_pages = None
 
-            for page in range(0, max_pages):
+            page = 0
+            while page < max_pages:
                 if progress_cb:
                     progress_cb(page + 1, max_pages)
                 params = {"keyWords": q_text, "count": per_page, "page": page}
@@ -83,6 +84,9 @@ class RabotaUAProvider(Provider):
                     resp.raise_for_status()
                     data = resp.json()
                 except Exception as e:
+                    if self._fetcher.is_offline_error(e):
+                        await self._fetcher.wait_for_internet()
+                        continue
                     if self._verbose:
                         import sys
 
@@ -147,6 +151,8 @@ class RabotaUAProvider(Provider):
 
                 if total_pages is not None and page + 1 >= total_pages:
                     break
+
+                page += 1
 
         return urls
 

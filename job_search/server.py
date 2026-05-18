@@ -32,11 +32,14 @@ _VIEW_HTML = r"""<!doctype html>
     .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
     input { padding: 8px; min-width: 280px; }
     button { padding: 8px 12px; cursor: pointer; }
-    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
-    th, td { border-bottom: 1px solid rgba(127,127,127,.35); padding: 8px; vertical-align: top; }
-    th { text-align: left; position: sticky; top: 0; background: Canvas; }
+    /* Sticky headers behave better with separate borders (esp. on Windows/Chromium). */
+    table { border-collapse: separate; border-spacing: 0; width: 100%; margin-top: 12px; }
+    th, td { border-bottom: 1px solid rgba(127,127,127,.35); padding: 6px 8px; vertical-align: top; line-height: 1.25; }
+    th { text-align: left; }
+    thead th { position: sticky; top: 0; background: Canvas; background-color: Canvas; z-index: 2; }
     .muted { opacity: .75; }
     .pill { display: inline-block; padding: 2px 8px; border: 1px solid rgba(127,127,127,.35); border-radius: 999px; font-size: 12px; }
+    .meta-line { font-size: 12px; white-space: nowrap; }
     .grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 8px; }
     @media (min-width: 900px){ .grid { grid-template-columns: 1fr 1fr; } }
     /* Allow long URLs to wrap without breaking normal text (like job titles) per-letter. */
@@ -44,7 +47,16 @@ _VIEW_HTML = r"""<!doctype html>
     th.col-title, td.col-title { width: 40%; min-width: 380px; }
     td.col-title a { overflow-wrap: break-word; }
     /* Highlight sortable headers (Location/Remote/Published). */
-    #thLocation, #thRemote, #thPublished { color: #ffcc00; }
+    #thNew, #thLocation, #thRemote, #thPublished { color: #ffcc00; }
+    th.col-new, td.col-new { width: 72px; }
+    tr.is-new td { background: rgba(60, 200, 60, .12); }
+    @media (prefers-color-scheme: dark){
+      tr.is-new td { background: rgba(60, 200, 60, .18); }
+    }
+    .pill-new { border-color: rgba(60, 200, 60, .6); color: rgb(0, 120, 0); font-weight: 600; }
+    @media (prefers-color-scheme: dark){
+      .pill-new { color: rgb(120, 240, 120); }
+    }
   </style>
 </head>
 <body>
@@ -53,6 +65,7 @@ _VIEW_HTML = r"""<!doctype html>
     <label>Filter: <input id="q" placeholder="python, qa, devops..." /></label>
     <label><input id="onlyActive" type="checkbox" checked /> only active</label>
     <button onclick="load()">Refresh</button>
+    <button class="muted" onclick="resetNew()" title="Clear last-open timestamp so NEW is recalculated (fallback: last 24h)">Reset NEW</button>
     <span class="muted" id="meta"></span>
   </div>
 
@@ -66,6 +79,7 @@ _VIEW_HTML = r"""<!doctype html>
   <table>
     <thead>
       <tr>
+        <th id="thNew" class="col-new" style="cursor:pointer" title="Sort by new" onclick="setSort('new')">New <span id="sortNewIcon" class="muted"></span></th>
         <th class="col-title">Title</th>
         <th>Company</th>
         <th>Source</th>
@@ -81,6 +95,7 @@ _VIEW_HTML = r"""<!doctype html>
 <script>
 let sortKey = 'published';
 let sortDir = -1; // -1 desc, 1 asc
+let currentLastOpenStorageKey = null;
 
 function setSort(key){
   if(sortKey === key){
@@ -95,6 +110,7 @@ function setSort(key){
 
 function renderSortIcons(){
   const icons = {
+    new: document.getElementById('sortNewIcon'),
     published: document.getElementById('sortPublishedIcon'),
     remote: document.getElementById('sortRemoteIcon'),
     location: document.getElementById('sortLocationIcon'),
@@ -109,15 +125,31 @@ function renderSortIcons(){
 
 function parseDateAny(s){
   if(!s) return 0;
-  // ISO or YYYY-MM-DD
+  // Prefer native parsing first (handles ISO with time/offset).
+  const t1 = Date.parse(String(s));
+  if(Number.isFinite(t1)) return t1;
+
+  // Fallback for plain YYYY-MM-DD.
   const m1 = String(s).match(/(\d{4})-(\d{2})-(\d{2})/);
   if(m1){
     const d = new Date(`${m1[1]}-${m1[2]}-${m1[3]}T00:00:00Z`);
-    const t = d.getTime();
-    return Number.isFinite(t) ? t : 0;
+    const t2 = d.getTime();
+    return Number.isFinite(t2) ? t2 : 0;
   }
-  const t = Date.parse(String(s));
-  return Number.isFinite(t) ? t : 0;
+  return 0;
+}
+
+function fmtShort(s){
+  if(!s) return '';
+  const t = parseDateAny(s);
+  if(!t) return String(s);
+  const d = new Date(t);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mi = String(d.getMinutes()).padStart(2,'0');
+  return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
 }
 
 async function load(){
@@ -130,6 +162,23 @@ async function load(){
   document.getElementById('meta').textContent = `Records: ${data.count}, Active: ${data.active}`;
 
   let jobs = data.jobs || [];
+  const storageKey = `jobsearch:lastOpen:${data.file || ''}`;
+  currentLastOpenStorageKey = storageKey;
+  const lastOpenRaw = localStorage.getItem(storageKey);
+  // Guard against corrupted values like "NaN"/"undefined" which would otherwise
+  // make cutoff=NaN and hide all NEW highlighting.
+  const lastOpenNum = (lastOpenRaw !== null) ? Number(lastOpenRaw) : NaN;
+  const hasLastOpen = Number.isFinite(lastOpenNum) && lastOpenNum > 0;
+  const lastOpen = hasLastOpen ? lastOpenNum : 0;
+  const fallbackSinceMs = 24 * 60 * 60 * 1000;
+  const cutoff = hasLastOpen ? lastOpen : (Date.now() - fallbackSinceMs);
+
+  // Mark "new" items as those first seen after the last time this page was opened.
+  // On first open, fall back to "new in the last 24 hours" to still surface fresh items.
+  for(const j of jobs){
+    j._is_new = parseDateAny(j.first_seen_at) >= cutoff;
+  }
+
   if(onlyActive){ jobs = jobs.filter(j => j.is_active); }
   if(q.length){
     jobs = jobs.filter(j => {
@@ -154,11 +203,13 @@ async function load(){
 
   for(const j of jobs){
     const tr = document.createElement('tr');
+    if(j._is_new){ tr.classList.add('is-new'); }
     const contacts = [];
     if(Array.isArray(j.emails) && j.emails.length){ contacts.push('email: ' + j.emails.join(', ')); }
     if(Array.isArray(j.phones) && j.phones.length){ contacts.push('tel: ' + j.phones.join(', ')); }
 
     tr.innerHTML = `
+      <td class="col-new">${j._is_new ? '<span class="pill pill-new">NEW</span>' : ''}</td>
       <td class="col-title">
         <div><a href="${j.url}" target="_blank" rel="noreferrer">${escapeHtml(j.title||'(no title)')}</a></div>
       </td>
@@ -168,12 +219,21 @@ async function load(){
       <td>${j.remote ? 'Yes' : 'No'}</td>
       <td>
         <div>${escapeHtml(j.published_at||'')}</div>
-        <div class="muted">Seen: ${escapeHtml(j.first_seen_at||'')} → ${escapeHtml(j.last_seen_at||'')}</div>
+        <div class="muted meta-line" title="First seen / Last seen">${escapeHtml(fmtShort(j.first_seen_at||''))} • ${escapeHtml(fmtShort(j.last_seen_at||''))}</div>
       </td>
       <td>${escapeHtml(contacts.join('\n'))}</td>
     `;
     tbody.appendChild(tr);
   }
+}
+
+function resetNew(){
+  if(!currentLastOpenStorageKey){
+    load();
+    return;
+  }
+  try { localStorage.removeItem(currentLastOpenStorageKey); } catch(e) {}
+  load();
 }
 
 function escapeHtml(s){
@@ -183,6 +243,12 @@ function escapeHtml(s){
 }
 
 function compareBy(key, a, b){
+  if(key === 'new'){
+    const na = a._is_new ? 1 : 0;
+    const nb = b._is_new ? 1 : 0;
+    if(na === nb) return 0;
+    return na < nb ? -1 : 1;
+  }
   if(key === 'published'){
     const ta = parseDateAny(a.published_at);
     const tb = parseDateAny(b.published_at);
@@ -204,6 +270,14 @@ function compareBy(key, a, b){
 }
 
 renderSortIcons();
+
+// Persist "last open" only when leaving the page, so sorting/filtering doesn't
+// immediately clear NEW badges during the current viewing session.
+window.addEventListener('beforeunload', () => {
+  if(currentLastOpenStorageKey){
+    try { localStorage.setItem(currentLastOpenStorageKey, String(Date.now())); } catch(e) {}
+  }
+});
 
 load();
 </script>
@@ -270,7 +344,16 @@ def make_handler(state: _State):
 
 def start_server(*, json_path: Path, host: str = "127.0.0.1", port: int = 8765) -> ThreadingHTTPServer:
     state = _State(json_path=json_path)
-    server = ThreadingHTTPServer((host, port), make_handler(state))
+    try:
+        server = ThreadingHTTPServer((host, port), make_handler(state))
+    except OSError:
+        # Some environments/firewalls reserve or block specific ports.
+        # Fall back to an ephemeral port so the viewer can still start.
+        server = ThreadingHTTPServer((host, 0), make_handler(state))
+        # Allow callers (GUI) to show a helpful message.
+        setattr(server, "_jobsearch_fallback_port", True)
+        setattr(server, "_jobsearch_requested_port", port)
+
     t = threading.Thread(target=server.serve_forever, daemon=True)
     t.start()
     return server

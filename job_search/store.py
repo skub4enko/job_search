@@ -1,6 +1,7 @@
 ﻿from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 from job_search.timeutil import now_iso
@@ -137,10 +138,27 @@ def _normalize_record(rec: dict) -> dict:
     out.setdefault("is_active", True)
     out["is_active"] = bool(out.get("is_active"))
 
+    if isinstance(out.get("published_at"), str):
+        out["published_at"] = _sanitize_published_at(out["published_at"])
+
     out["emails"] = _uniq([str(x).strip().lower() for x in out["emails"] if str(x).strip()])
     out["phones"] = _uniq([str(x).strip() for x in out["phones"] if str(x).strip()])
 
     return out
+
+
+def _sanitize_published_at(value: str) -> str:
+    s = (value or "").replace("\u00a0", " ").replace("\r", " ").replace("\n", " ").strip()
+    s = " ".join(s.split())
+    if len(s) <= 80:
+        return s
+
+    # Prefer keeping a date-like fragment if possible.
+    m = re.search(r"(\d{4}-\d{2}-\d{2}|\d{1,2}\s+[^\d\s]{3,20}\s+\d{4})", s)
+    if m:
+        return m.group(1).strip()
+
+    return s[:80].rstrip()
 
 
 def _uniq(values: list[str]) -> list[str]:

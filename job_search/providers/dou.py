@@ -72,7 +72,7 @@ class DOUProvider(Provider):
         if r.status_code != 200:
             if self._verbose:
                 import sys
-                print(f"[{self.source}] status={r.status_code} url={feed_url}", file=sys.stderr)
+                print(f"[{self.source}] status={r.status_code} url={url}", file=sys.stderr)
             return None
 
         soup = BeautifulSoup(r.text, "lxml")

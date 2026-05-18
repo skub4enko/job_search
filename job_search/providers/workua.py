@@ -16,6 +16,44 @@ class WorkUAProvider(Provider):
     source = "workua"
     _BASE = "https://www.work.ua/"
 
+    _PUBLISHED_RE = re.compile(r"(Опубліковано|Вакансія від|Опубликовано)\s*[:–-]?\s*(.+)", re.IGNORECASE)
+
+    @staticmethod
+    def _clean_published_at(value: str) -> str:
+        s = re.sub(r"\s+", " ", (value or "").replace("\u00a0", " ")).strip()
+        if not s:
+            return ""
+
+        # Work.ua often appends extra UI text after the date (e.g. "Зараз переглядають...").
+        s = re.split(
+            r"\b(Зараз|Схожі|Опис|Контакти|Відгукнутися|Показати|Умови|Вимоги|Обов[’']язки)\b",
+            s,
+            maxsplit=1,
+        )[0].strip(" ,;|-")
+
+        if len(s) <= 80:
+            return s
+
+        # If it's still huge, try to extract a date-like fragment.
+        m = re.search(
+            r"(\d{4}-\d{2}-\d{2}|\d{1,2}\s+[^\d\s]{3,20}\s+\d{4})",
+            s,
+        )
+        if m:
+            return m.group(1).strip()
+
+        return s[:80].rstrip()
+
+    def _extract_published_at(self, soup: BeautifulSoup) -> str:
+        # Use newlines for safer extraction; page_text (space-joined) can make regex consume the whole page.
+        text_nl = soup.get_text("\n", strip=True)
+        for line in text_nl.splitlines():
+            m = self._PUBLISHED_RE.search(line)
+            if not m:
+                continue
+            return self._clean_published_at(m.group(2))
+        return ""
+
     async def search_job_urls(
         self,
         *,
@@ -113,9 +151,7 @@ class WorkUAProvider(Provider):
 
         # === Published date ===
         published_at = ""
-        date_match = re.search(r"(Опубліковано|Вакансія від|Опубликовано)\s*[:–]?\s*([^\n\r]+)", page_text)
-        if date_match:
-            published_at = date_match.group(2).strip()
+        published_at = self._extract_published_at(soup)
 
         # === Remote filter ===
         if remote_only and not remote:

@@ -68,20 +68,11 @@ async def _run_async(cfg: RunConfig) -> list[Job]:
         cancel_event=cfg.cancel_event,
     )
 
-    async def _gate() -> None:
-        if cfg.cancel_event is not None and cfg.cancel_event.is_set():
-            raise asyncio.CancelledError()
-        while cfg.pause_event is not None and cfg.pause_event.is_set():
-            await asyncio.sleep(0.2)
-            if cfg.cancel_event is not None and cfg.cancel_event.is_set():
-                raise asyncio.CancelledError()
-
-
     try:
         out: list[Job] = []
         src_total = len(cfg.sources)
         for src_i, source in enumerate(cfg.sources, start=1):
-            await _gate()
+            await fetcher.gate()
             provider_cls = providers_map[source]
             provider = provider_cls(fetcher, verbose=cfg.verbose)
 
@@ -94,7 +85,7 @@ async def _run_async(cfg: RunConfig) -> list[Job]:
             if cfg.verbose:
                 _log(cfg, f"[{source}] search...")
 
-            await _gate()
+            await fetcher.gate()
             job_urls = await provider.search_job_urls(
                 query=cfg.query,
                 city=cfg.city,
@@ -119,7 +110,7 @@ async def _run_async(cfg: RunConfig) -> list[Job]:
             async def parse_one(u: str) -> Job | None:
                 async with sem:
                     try:
-                        await _gate()
+                        await fetcher.gate()
                         return await provider.parse_job(u, remote_only=cfg.remote_only, city=cfg.city)
                     except Exception as e:
                         if cfg.verbose:

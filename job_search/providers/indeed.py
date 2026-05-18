@@ -59,7 +59,8 @@ class IndeedProvider(Provider):
         }
 
         async with httpx.AsyncClient(timeout=timeout, headers=headers, follow_redirects=True) as client:
-            for page in range(1, max_pages + 1):
+            page = 1
+            while page <= max_pages:
                 if progress_cb:
                     progress_cb(page, max_pages)
                 params = {
@@ -72,7 +73,10 @@ class IndeedProvider(Provider):
                     resp = await client.get(self._BASE, params=params)
                     resp.raise_for_status()
                     data = resp.json()
-                except Exception:
+                except Exception as e:
+                    if self._fetcher.is_offline_error(e):
+                        await self._fetcher.wait_for_internet()
+                        continue
                     break
 
                 jobs = data.get("jobs") or data.get("results") or []
@@ -127,6 +131,8 @@ class IndeedProvider(Provider):
 
                     if len(urls) >= limit:
                         return urls
+
+                page += 1
 
         return urls
 

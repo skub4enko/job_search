@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import shutil
 import subprocess
@@ -65,12 +65,13 @@ def _win_try_play_mp3_ffplay(path: Path, *, sleep_ms: int = 2500) -> bool:
 def _win_try_play_mp3_wmplayer(path: Path, *, sleep_ms: int = 2000) -> bool:
     try:
         p = path.resolve()
+        p_escaped = str(p).replace("'", "''")
         ps = (
             "try {"
             "  $ErrorActionPreference='Stop';"
             "  $wmp=New-Object -ComObject WMPlayer.OCX;"
             "  $wmp.settings.volume=100;"
-            f"  $wmp.URL='{str(p).replace("'", "''")}';"
+            f"  $wmp.URL='{p_escaped}';"
             "  $wmp.controls.play();"
             f"  Start-Sleep -Milliseconds {int(sleep_ms)};"
             "  $wmp.close();"
@@ -103,12 +104,13 @@ def _win_try_play_mp3_wmplayer(path: Path, *, sleep_ms: int = 2000) -> bool:
 def _win_try_play_mp3_wpf(path: Path, *, sleep_ms: int = 2000) -> bool:
     try:
         uri = path.resolve().as_uri()
+        uri_escaped = uri.replace("'", "''")
         ps = (
             "try {"
             "  $ErrorActionPreference='Stop';"
             "  Add-Type -AssemblyName presentationCore;"
             "  $player=New-Object System.Windows.Media.MediaPlayer;"
-            f"  $player.Open([System.Uri]'{uri.replace("'", "''")}');"
+            f"  $player.Open([System.Uri]'{uri_escaped}');"
             "  $player.Volume=1.0;"
             "  $player.Play();"
             f"  Start-Sleep -Milliseconds {int(sleep_ms)};"
@@ -180,7 +182,6 @@ def play_sound(path: Path | str | None) -> None:
             _fallback_beep()
             return
 
-        # MP3 and other formats: try multiple strategies.
         if _win_try_play_mp3_ffplay(p):
             return
         if _win_try_play_mp3_wmplayer(p):
@@ -213,7 +214,6 @@ def diagnose_sound(path: Path | str | None) -> dict:
             info["reason"] = "Non-Windows: only fallback bell is available in this project."
             return info
 
-        # WMPlayer COM availability
         try:
             import winreg
 
@@ -231,3 +231,4 @@ def diagnose_sound(path: Path | str | None) -> dict:
         return info
     except Exception as e:
         return {"error": str(e)}
+

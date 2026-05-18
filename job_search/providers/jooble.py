@@ -52,7 +52,8 @@ class JoobleProvider(Provider):
         }
 
         async with httpx.AsyncClient(timeout=timeout, headers=headers, follow_redirects=True) as client:
-            for page in range(1, max_pages + 1):
+            page = 1
+            while page <= max_pages:
                 if progress_cb:
                     progress_cb(page, max_pages)
                 payload = {
@@ -65,6 +66,9 @@ class JoobleProvider(Provider):
                     resp.raise_for_status()
                     data = resp.json()
                 except Exception as e:
+                    if self._fetcher.is_offline_error(e):
+                        await self._fetcher.wait_for_internet()
+                        continue
                     if self._verbose:
                         print(f"[{self.source}] api error: {e}", file=sys.stderr)
                     break
@@ -121,6 +125,8 @@ class JoobleProvider(Provider):
 
                     if len(urls) >= limit:
                         return urls
+
+                page += 1
 
         return urls
 

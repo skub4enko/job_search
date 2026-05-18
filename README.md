@@ -12,6 +12,14 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+## Сборка (зависимости)
+
+Для сборки EXE нужен PyInstaller:
+
+```powershell
+pip install -r requirements-build.txt
+```
+
 ## Query (что искать)
 
 `--query` — это название профессии/роль/ключевые слова.
